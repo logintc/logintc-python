@@ -8,6 +8,7 @@ setup(
     author_email='support@cyphercor.com',
     url='https://github.com/logintc/logintc-python',
     packages=find_packages(),
+    package_data={'': ['*.pem']},
     license='LICENSE',
     description='API client for LoginTC two-factor authentication.',
     keywords=['logintc', 'two-factor', 'authentication', 'security'],

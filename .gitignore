@@ -1,0 +1,6 @@
+*.pyc
+logintc.egg-info/
+build/
+_build/
+dist/
+README.txt

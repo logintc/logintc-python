@@ -1,4 +1,4 @@
-include *.txt
+include README.rst
 include logintc/ca_cert.pem
 recursive-include logintc/tests test*.py
 recursive-include docs *

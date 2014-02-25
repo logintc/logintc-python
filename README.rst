@@ -10,7 +10,7 @@ The libraries can be installed using the standard Python module installation met
 
 ::
 
-    git clone git@github.com:logintc/logintc-python
+    git clone https://github.com/logintc/logintc-python.git
     cd logintc-python
     python setup.py install
 

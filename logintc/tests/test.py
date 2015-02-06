@@ -34,6 +34,12 @@ class TestLoginTCClient(unittest.TestCase):
         self.user_email = 'jdoe@cyphercor.com'
         self.user_name = 'John Doe'
 
+        self.domain_name = 'Cisco ASA'
+        self.domain_type = 'RADIUS'
+        self.domain_key_type = 'PIN'
+
+        self.organization_name = 'Chrome Stage'
+
         self.token_code = '89hto1p45'
 
         self.client = logintc.LoginTC(self.api_key)
@@ -249,6 +255,101 @@ class TestLoginTCClient(unittest.TestCase):
 
         self.assertTrue(self.verify_request('DELETE', path))
 
+    def test_get_ping(self):
+        self.set_response('GET',
+                          '/ping',
+                          {'status': '200'},
+                          json.dumps({'status': 'OK'}))
+
+        res = self.client.get_ping()
+
+        self.assertEqual({'status': 'OK'}, res)
+
+    def test_get_organization(self):
+        self.set_response('GET',
+                          '/organization',
+                          {'status': '200'},
+                          json.dumps({'name': self.organization_name}))
+
+        res = self.client.get_organization()
+
+        self.assertEqual({'name': self.organization_name}, res)
+
+    def test_get_domain(self):
+        self.set_response('GET',
+                          '/domains/%s' % self.domain_id,
+                          {'status': '200'},
+                          json.dumps({'id': self.domain_id,
+                                      'name': self.domain_name,
+                                      'type': self.domain_type,
+                                      'keyType': self.domain_key_type
+                                      }))
+
+        res = self.client.get_domain(self.domain_id)
+
+        self.assertEqual({'id': self.domain_id,
+                          'name': self.domain_name,
+                          'type': self.domain_type,
+                          'keyType': self.domain_key_type}, res)
+
+    def test_get_domain_user(self):
+        self.set_response('GET',
+                          '/domains/%s/users/%s' % (self.domain_id, self.user_id),
+                          {'status': '200'},
+                          json.dumps({'id': self.user_id,
+                                      'username': self.user_username,
+                                      'email': self.user_email,
+                                      'name': self.user_name,
+                                      'domains': ['%s' % self.domain_id]
+                                      }))
+
+        res = self.client.get_domain_user(self.domain_id, self.user_id)
+
+        self.assertEqual({'id': self.user_id,
+                          'username': self.user_username,
+                          'email': self.user_email,
+                          'name': self.user_name,
+                          'domains': ['%s' % self.domain_id]
+                          }, res)
+
+    def test_get_domain_users(self):
+        self.set_response('GET',
+                          '/domains/%s/users' % self.domain_id,
+                          {'status': '200'},
+                          json.dumps([{'id': self.user_id,
+                                       'username': self.user_username,
+                                       'email': self.user_email,
+                                       'name': self.user_name,
+                                       'domains': ['%s' % self.domain_id]
+                                       }, {'id': self.user_id,
+                                           'username': self.user_username,
+                                           'email': self.user_email,
+                                           'name': self.user_name,
+                                           'domains': ['%s' % self.domain_id]
+                                           }]))
+
+        res = self.client.get_domain_users(self.domain_id)
+
+        self.assertEqual([{'id': self.user_id,
+                           'username': self.user_username,
+                           'email': self.user_email,
+                           'name': self.user_name,
+                           'domains': ['%s' % self.domain_id]
+                           }, {'id': self.user_id,
+                               'username': self.user_username,
+                               'email': self.user_email,
+                               'name': self.user_name,
+                               'domains': ['%s' % self.domain_id]
+                               }], res)
+
+    def test_get_domain_image(self):
+        self.set_response('GET',
+                          '/domains/%s/image' % self.domain_id,
+                          {'status': '200'}, 'Hello World!')
+
+        res = self.client.get_domain_image(self.domain_id)
+
+        self.assertEqual('Hello World!', res)
 
 if __name__ == '__main__':
     unittest.main()

@@ -57,6 +57,8 @@ class LoginTC(object):
     LoginTC Admin client to manage LoginTC users, domains, tokens and sessions.
     """
     DEFAULT_HOST = 'cloud.logintc.com'
+    CONTENT_TYPE = 'application/vnd.logintc.v1+json'
+    DEFAULT_ACCEPT_HEADER = 'application/vnd.logintc.v1+json'
 
     def __init__(self, api_key, host=DEFAULT_HOST, secure=True):
         self.api_key = api_key
@@ -69,18 +71,18 @@ class LoginTC(object):
         self.http = httplib2.Http(ca_certs=CA_CERT_FILE)
         self.http.follow_all_redirects = True
 
-    def _http(self, method, path, body=None):
+    def _http(self, method, path, body=None, accept_header=DEFAULT_ACCEPT_HEADER):
         """
         Internal HTTP client for the REST API.
         """
         path = '%s%s' % ('/api', path)
 
-        headers = {'Accept': 'application/vnd.logintc.v1+json',
+        headers = {'Accept': accept_header,
                    'Authorization': 'LoginTC key="%s"' % self.api_key,
                    'User-Agent': 'LoginTC-Python/%s' % __version__}
 
         if method in ['PUT', 'POST'] and body is not None:
-            headers['Content-Type'] = 'application/vnd.logintc.v1+json'
+            headers['Content-Type'] = self.CONTENT_TYPE
 
         response, content = self.http.request('%s%s' % (self.base_uri, path),
                                               method,
@@ -260,3 +262,51 @@ class LoginTC(object):
         """
         self._http('DELETE',
                    '/domains/%s/sessions/%s' % (domain_id, session_id))
+
+    def get_ping(self):
+        """
+        Get ping status.
+
+        Returns a dict containing the ping status.
+        """
+        return json.loads(self._http('GET', '/ping'))
+
+    def get_organization(self):
+        """
+        Get organization info.
+
+        Returns a dict containing the organization information.
+        """
+        return json.loads(self._http('GET', '/organization'))
+
+    def get_domain(self, domain_id):
+        """
+        Get domain info.
+
+        Returns a dict containing the domain's information.
+        """
+        return json.loads(self._http('GET', '/domains/%s' % domain_id))
+
+    def get_domain_image(self, domain_id):
+        """
+        Get domain image.
+
+        Returns a byte array containing the domain's image.
+        """
+        return self._http('GET', '/domains/%s/image' % domain_id, accept_header='image/png')
+
+    def get_domain_user(self, domain_id, user_id):
+        """
+        Get domain user.
+
+        Returns a dict containing the domain's user with given user_id.
+        """
+        return json.loads(self._http('GET', '/domains/%s/users/%s' % (domain_id, user_id)))
+
+    def get_domain_users(self, domain_id):
+        """
+        Get domain users.
+
+        Returns a dict containing an array of domain's users.
+        """
+        return json.loads(self._http('GET', '/domains/%s/users' % domain_id))

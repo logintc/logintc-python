@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='logintc',
-    version='1.0.2',
+    version='1.1.1',
     author='Cyphercor Inc.',
     author_email='support@cyphercor.com',
     url='https://github.com/logintc/logintc-python',

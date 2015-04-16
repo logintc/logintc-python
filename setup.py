@@ -1,8 +1,10 @@
 from setuptools import setup, find_packages
 
+import logintc
+
 setup(
     name='logintc',
-    version='1.1.2',
+    version='.'.join(logintc.__version_info__),
     author='Cyphercor Inc.',
     author_email='support@cyphercor.com',
     url='https://github.com/logintc/logintc-python',

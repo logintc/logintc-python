@@ -220,7 +220,7 @@ class LoginTC(object):
                    '/domains/%s/users/%s/token' % (domain_id, user_id))
 
     def create_session(self, domain_id, user_id=None, attributes=None,
-                       username=None, ip_address=None):
+                       username=None, ip_address=None, bypass_code=None):
         """
         Create a LoginTC request.
 
@@ -240,6 +240,9 @@ class LoginTC(object):
 
         if ip_address is not None:
             body['ipAddress'] = ip_address
+
+        if bypass_code is not None:
+            body['bypasscode'] = bypass_code
 
         resp = self._http('POST', '/domains/%s/sessions' % domain_id,
                           json.dumps(body))

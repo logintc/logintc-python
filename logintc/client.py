@@ -27,6 +27,7 @@ class InternalAPIException(LoginTCException):
     """
     Exception caused by internal client exception.
     """
+
     def __init__(self):
         LoginTCException.__init__(
             self, 'Something went wrong. Please try again.')
@@ -36,6 +37,7 @@ class APIException(LoginTCException):
     """
     Exception for failures because of API.
     """
+
     def __init__(self, code, message):
         LoginTCException.__init__(self, message)
 
@@ -48,6 +50,7 @@ class NoTokenException(APIException):
     domain. This means the token doesn't exist, it's not yet loaded, or it has
     been revoked.
     """
+
     def __init__(self, code, message):
         APIException.__init__(self, code, message)
 
@@ -197,7 +200,7 @@ class LoginTC(object):
         Returns a dict containing the token information.
         """
         return json.loads(self._http('PUT',
-                          '/domains/%s/users/%s/token' % (domain_id, user_id)))
+                                     '/domains/%s/users/%s/token' % (domain_id, user_id)))
 
     def get_user_token(self, domain_id, user_id):
         """
@@ -208,7 +211,7 @@ class LoginTC(object):
         Returns a dict containing the token information.
         """
         return json.loads(self._http('GET',
-                          '/domains/%s/users/%s/token' % (domain_id, user_id)))
+                                     '/domains/%s/users/%s/token' % (domain_id, user_id)))
 
     def delete_user_token(self, domain_id, user_id):
         """
@@ -316,3 +319,45 @@ class LoginTC(object):
         Returns a dict containing an array of domain's users.
         """
         return json.loads(self._http('GET', '/domains/%s/users' % domain_id))
+
+
+    def get_bypass_code(self, bypass_code_id):
+        """
+        Get bypass code.
+
+        Returns a dict containing the bypass code's information.
+        """
+        return json.loads(self._http('GET', '/bypasscodes/%s' % bypass_code_id))
+
+    def get_bypass_codes(self, user_id):
+        """
+        Get bypass code.
+
+        Returns a dict containing an array of the user's bypass code information.
+        """
+        return json.loads(self._http('GET', '/users/%s/bypasscodes' % user_id))
+
+    def create_bypass_code(self, user_id, uses_allowed = 1, expiration_time = 0):
+        """
+        Create a bypass code.
+
+        Returns the information for the bypass code as a dict.
+        """
+        body = {'usesAllowed': uses_allowed, 'expirationTime': expiration_time}
+        return json.loads(self._http('POST', '/users/%s/bypasscodes' % user_id, json.dumps(body)))
+
+    def delete_bypass_code(self, bypass_code_id):
+        """
+        Delete a bypass code.
+
+        No return value.
+        """
+        self._http('DELETE', '/bypasscodes/%s' % bypass_code_id)
+
+    def delete_bypass_codes(self, user_id):
+        """
+        Delete all of user's bypass codes.
+
+        No return value.
+        """
+        self._http('DELETE', '/users/%s/bypasscodes' % user_id)

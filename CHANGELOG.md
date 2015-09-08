@@ -1,9 +1,26 @@
 Changelog
 =========
+## 1.1.6
+
+Relesed on 2015-09-08
+
+ * Add full bypass code support
+
+## 1.1.5
+
+Relesed on 2015-08-12
+
+ * Add bypass code support to create_session
+
+## 1.1.4
+
+Relesed on 2015-06-24
+
+ * Add ipAddress support to create_session
 
 ## 1.1.3
 
-Relased on 2015-04-08
+Released on 2015-04-08
 
  * Added new CA root certificate
 

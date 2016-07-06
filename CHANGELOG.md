@@ -1,5 +1,12 @@
 Changelog
 =========
+## 1.1.7
+
+Released on 2016-07-05
+
+ * Add full hardware token support
+ * Fix Content-Length header bug for empty PUT and POST requests
+
 ## 1.1.6
 
 Relesed on 2015-09-08

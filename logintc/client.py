@@ -84,8 +84,11 @@ class LoginTC(object):
                    'Authorization': 'LoginTC key="%s"' % self.api_key,
                    'User-Agent': 'LoginTC-Python/%s' % __version__}
 
-        if method in ['PUT', 'POST'] and body is not None:
-            headers['Content-Type'] = self.CONTENT_TYPE
+        if method in ['PUT', 'POST']:
+            if body is not None:
+                headers['Content-Type'] = self.CONTENT_TYPE
+            else:
+                headers['Content-Length'] = '0'
 
         response, content = self.http.request('%s%s' % (self.base_uri, path),
                                               method,
@@ -223,7 +226,7 @@ class LoginTC(object):
                    '/domains/%s/users/%s/token' % (domain_id, user_id))
 
     def create_session(self, domain_id, user_id=None, attributes=None,
-                       username=None, ip_address=None, bypass_code=None):
+                       username=None, ip_address=None, bypass_code=None, otp=None):
         """
         Create a LoginTC request.
 
@@ -246,6 +249,8 @@ class LoginTC(object):
 
         if bypass_code is not None:
             body['bypasscode'] = bypass_code
+        elif otp is not None:
+            body['otp'] = otp
 
         resp = self._http('POST', '/domains/%s/sessions' % domain_id,
                           json.dumps(body))
@@ -361,3 +366,79 @@ class LoginTC(object):
         No return value.
         """
         self._http('DELETE', '/users/%s/bypasscodes' % user_id)
+    
+    def get_hardware_token(self, hardware_token_id):
+        """
+        Get hardware token.
+
+        Returns a dict containing the hardware tokens's information.
+        """
+        return json.loads(self._http('GET', '/hardware/%s' % hardware_token_id))
+
+    def get_user_hardware_token(self, user_id):
+        """
+        Get user hardware token.
+
+        Returns a dict containing the hardware tokens's information.
+        """
+        return json.loads(self._http('GET', '/users/%s/hardware' % user_id))
+
+    def get_hardware_tokens(self):
+        """
+        Get hardware token.
+
+        Returns a dict containing an array of the hardware token information.
+        """
+        return json.loads(self._http('GET', '/hardware'))
+
+    def create_hardware_token(self, alias, serialNumber, type, timeStep, seed):
+        """
+        Create a hardware token.
+
+        Returns the information for the hardware token as a dict.
+        """
+        body = {'serialNumber': serialNumber, 'type': type, 'timeStep': timeStep, 'seed': seed}
+        
+        if alias is not None:
+            body['alias'] = alias
+        
+        return json.loads(self._http('POST', '/hardware', json.dumps(body)))
+
+    def update_hardware_token(self, hardware_token_id, alias=None):
+        """
+        Update a hardware token's alias.
+
+        Returns the hardware token information as a dict.
+        """
+        body = {}
+
+        if alias is not None:
+            body['alias'] = alias
+
+        return json.loads(self._http('PUT', '/hardware/%s' % hardware_token_id,
+                                     json.dumps(body)))
+
+    def delete_hardware_token(self, hardware_token_id):
+        """
+        Delete a hardware token.
+
+        No return value.
+        """
+        self._http('DELETE', '/hardware/%s' % hardware_token_id)
+        
+    def associate_hardware_token(self, user_id, hardware_token_id):
+        """
+        Associate a hardware token with a user.
+
+        No return value.
+        """
+
+        self._http('PUT', '/users/%s/hardware/%s' % (user_id, hardware_token_id))
+
+    def disassociate_hardware_token(self, user_id):
+        """
+        Disassociate a user's hardware token.
+
+        No return value.
+        """
+        self._http('DELETE', '/users/%s/hardware' % user_id)

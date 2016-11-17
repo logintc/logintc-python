@@ -1,5 +1,12 @@
 Changelog
 =========
+## 1.1.8
+
+Released on 2016-11-05
+
+ * Add paging support
+ * Add get user by username
+
 ## 1.1.7
 
 Released on 2016-07-05

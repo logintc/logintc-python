@@ -126,6 +126,23 @@ class LoginTC(object):
         """
         return json.loads(self._http('GET', '/users/%s' % user_id))
 
+    def get_user_by_username(self, username):
+        """
+        Get user info.
+
+        Returns a dict containing the user's information.
+        """
+        return json.loads(self._http('GET', '/users?username=%s' % username))
+
+    def get_users(self, page=1):
+        """
+        Get users info.
+
+        Returns a dict containing the user's information.
+        """
+        return json.loads(self._http('GET', '/users?page=%d' % page))
+
+
     def create_user(self, username, email, name):
         """
         Create a new user.
@@ -317,13 +334,13 @@ class LoginTC(object):
         """
         return json.loads(self._http('GET', '/domains/%s/users/%s' % (domain_id, user_id)))
 
-    def get_domain_users(self, domain_id):
+    def get_domain_users(self, domain_id, page=1):
         """
         Get domain users.
 
         Returns a dict containing an array of domain's users.
         """
-        return json.loads(self._http('GET', '/domains/%s/users' % domain_id))
+        return json.loads(self._http('GET', '/domains/%s/users?page=%d' % (domain_id, page)))
 
 
     def get_bypass_code(self, bypass_code_id):
@@ -383,13 +400,13 @@ class LoginTC(object):
         """
         return json.loads(self._http('GET', '/users/%s/hardware' % user_id))
 
-    def get_hardware_tokens(self):
+    def get_hardware_tokens(self, page=1):
         """
         Get hardware token.
 
         Returns a dict containing an array of the hardware token information.
         """
-        return json.loads(self._http('GET', '/hardware'))
+        return json.loads(self._http('GET', '/hardware?page=%d' % page))
 
     def create_hardware_token(self, alias, serialNumber, type, timeStep, seed):
         """

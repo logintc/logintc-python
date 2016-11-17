@@ -314,7 +314,7 @@ class TestLoginTCClient(unittest.TestCase):
 
     def test_get_domain_users(self):
         self.set_response('GET',
-                          '/domains/%s/users' % self.domain_id,
+                          '/domains/%s/users?page=1' % self.domain_id,
                           {'status': '200'},
                           json.dumps([{'id': self.user_id,
                                        'username': self.user_username,

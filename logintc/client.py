@@ -8,12 +8,8 @@ https://www.logintc.com/docs/rest-api/
 
 import json
 import httplib2
-import os.path
 
 from logintc import __version__
-
-CA_CERT_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                            'ca_cert.pem')
 
 
 class LoginTCException(Exception):
@@ -63,7 +59,7 @@ class LoginTC(object):
     CONTENT_TYPE = 'application/vnd.logintc.v1+json'
     DEFAULT_ACCEPT_HEADER = 'application/vnd.logintc.v1+json'
 
-    def __init__(self, api_key, host=DEFAULT_HOST, secure=True):
+    def __init__(self, api_key, host=DEFAULT_HOST, secure=True, ca_certs=None):
         self.api_key = api_key
         self.host = host
         self.base_uri = 'http%s://%s' % ('s' if secure else '', host)
@@ -71,7 +67,7 @@ class LoginTC(object):
         if self.host is None:
             self.host = LoginTC.DEFAULT_HOST
 
-        self.http = httplib2.Http(ca_certs=CA_CERT_FILE)
+        self.http = httplib2.Http(ca_certs=ca_certs)
         self.http.follow_all_redirects = True
 
     def _http(self, method, path, body=None, accept_header=DEFAULT_ACCEPT_HEADER):

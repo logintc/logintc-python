@@ -1,5 +1,13 @@
 Changelog
 =========
+
+## 1.1.9
+
+Released on 2017-01-11
+
+ * Removed CA certificate pin
+ * Updated httplib2 dependency
+
 ## 1.1.8
 
 Released on 2016-11-05

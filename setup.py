@@ -14,7 +14,7 @@ setup(
     description='API client for LoginTC two-factor authentication.',
     long_description=open('README.rst', 'rt').read(),
     keywords=['logintc', 'two-factor', 'authentication', 'security'],
-    install_requires=['httplib2 >= 0.7'],
+    install_requires=['httplib2 >= 0.9.2'],
     classifiers=['Topic :: Security',
                  'License :: OSI Approved :: BSD License']
 )
